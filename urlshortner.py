@@ -65,7 +65,7 @@ class UrlShortener(object) :
 
     #list all users in the database
     def list_all_users(self):
-        print("here are all the users of the database")
+        print("here are all the users of the database\n")
         for key in self.redis_serv.scan_iter("*@*"):
             # delete the key
             print(key.decode('utf-8'),"\n")
@@ -119,7 +119,8 @@ class UrlShortener(object) :
                 self.redis_serv.incr("totalUsers", 1)
                 self.redis_serv.hset(self.user_id, "userUrls",1)
                 self.post_add_process()
-                self.redis_serv.incr("totalUrls", 1)
+                if(not self.redis_serv.exists(self.shortened_url)):
+                    self.redis_serv.incr("totalUrls", 1)
                 print("Added ", self.user_id, "to users\n")
                 print("Here is the url shortened ", self.shortened_url,"\n")
                 return True
@@ -134,7 +135,7 @@ class UrlShortener(object) :
         if(not self.add_user_to_db()):
             #if the url was already shortened by the user we give the long url
             if(self.redis_serv.hexists(self.user_id, self.url)):
-                print("URL was shortened here is the long URL ", self.redis_serv.hget(self.user_id, self.url))
+                print("URL was shortened here is the long URL ", self.redis_serv.hget(self.user_id, self.url).decode('utf-8'))
                 self.redis_serv.incr(self.url, 1)
             #if the url was shortened before we give a notification that it was
             elif(self.redis_serv.hexists(self.user_id, self.shortened_url)):
