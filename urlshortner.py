@@ -18,6 +18,8 @@ parser.add_argument('-s','--stats', action='store_true', help='show stats of the
 parser.add_argument('-us','--userstats', action='store_true', help='show stats of the user')
 #argument to show how much a shortened url was requested
 parser.add_argument('-qs','--querystats', action='store_true', help='show the number of times an url was requested')
+#argument to list all users present in the database
+parser.add_argument('-lu','--listusers',action = 'store_true', help = 'list all users')
 
 
 args = parser.parse_args()
@@ -60,6 +62,14 @@ class UrlShortener(object) :
         self.shortened_url = self.base_url + to_add 
         #process the query 
         self.process_query()   
+
+    #list all users in the database
+    def list_all_users(self):
+        print("here are all the users of the database")
+        for key in self.redis_serv.scan_iter("*@*"):
+            # delete the key
+            print(key.decode('utf-8'),"\n")
+
 
     #validate the user_id
     def validate_user_id(self):
@@ -153,3 +163,4 @@ if __name__ == '__main__' :
         us.show_user_stats()
     if (args.querystats):
         us.show_query_stats()
+    us.list_all_users()
