@@ -163,4 +163,5 @@ if __name__ == '__main__' :
         us.show_user_stats()
     if (args.querystats):
         us.show_query_stats()
-    us.list_all_users()
+    if(args.listusers):
+        us.list_all_users()
